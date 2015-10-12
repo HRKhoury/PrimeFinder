@@ -73,6 +73,9 @@ public class PrimeFinder extends JFrame implements Runnable, ActionListener {
             }
             candidate++;
         }
+        //Done running, ready gui to run again
+        display.setEnabled(true);
+        go = null;
     }        
    
     
