@@ -17,7 +17,7 @@ public class PrimeFinder extends JFrame implements Runnable, ActionListener {
     Thread go;
     JLabel howManyLabel;
     JTextField howMany;
-    JButton display;
+    JButton display, stop;
     JTextArea primes;
     
     public PrimeFinder() {
@@ -32,13 +32,17 @@ public class PrimeFinder extends JFrame implements Runnable, ActionListener {
         howManyLabel = new JLabel("Quantity: ");
         howMany = new JTextField("400", 10);
         display = new JButton("Display Primes");
+        stop = new JButton("Stop");
         primes = new JTextArea(8, 40);
         
         display.addActionListener(this);
+        stop.addActionListener(this);
         JPanel topPanel = new JPanel();
         topPanel.add(howManyLabel);
         topPanel.add(howMany);
         topPanel.add(display);
+        stop.setEnabled(false);
+        topPanel.add(stop);
         add(topPanel, BorderLayout.NORTH);
         
         primes.setLineWrap(true);
@@ -51,22 +55,28 @@ public class PrimeFinder extends JFrame implements Runnable, ActionListener {
     public void actionPerformed(ActionEvent event) {
         if (event.getSource() == display) {
            display.setEnabled(false);
+           stop.setEnabled(true);
            primes.setText(null);
            if ( go == null) {
                 go = new Thread(this);
                 go.start();
            }
-	}
-    }
-    
+	} else {
+            go = null;
+            display.setEnabled(true);
+            stop.setEnabled(false);
+            primes.append("Stopped");            
+        }
+    }    
     
     public void run() {
+        Thread thisThread = Thread.currentThread();
         int quantity = Integer.parseInt(howMany.getText());
         int numPrimes = 0;
         //candidate: the number that might be prime
         int candidate = 2;
         primes.append("First " + quantity + " primes: ");
-        while (numPrimes < quantity) {
+        while ((numPrimes < quantity) & (go == thisThread)) {
             if (isPrime(candidate)) {
                 primes.append(candidate + " ");
                 numPrimes++;
@@ -75,9 +85,9 @@ public class PrimeFinder extends JFrame implements Runnable, ActionListener {
         }
         //Done running, ready gui to run again
         display.setEnabled(true);
+        stop.setEnabled(false);
         go = null;
-    }        
-   
+    }   
     
     public static boolean isPrime(int checkNumber) {
         double root = Math.sqrt(checkNumber);
