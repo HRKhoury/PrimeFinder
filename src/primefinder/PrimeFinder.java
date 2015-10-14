@@ -57,17 +57,21 @@ public class PrimeFinder extends JFrame implements Runnable, ActionListener {
            display.setEnabled(false);
            stop.setEnabled(true);
            primes.setText(null);
-           if ( go == null) {
-                go = new Thread(this);
-                go.start();
+           if (go == null) {
+               go = new Thread(this);
+               go.start();
            }
 	} else {
-            go = null;
-            display.setEnabled(true);
-            stop.setEnabled(false);
+            reset();
             primes.append("Stopped");            
         }
-    }    
+    }
+    
+    public void reset() {
+        go = null;
+        display.setEnabled(true);
+        stop.setEnabled(false);
+    }
     
     public void run() {
         Thread thisThread = Thread.currentThread();
@@ -84,9 +88,7 @@ public class PrimeFinder extends JFrame implements Runnable, ActionListener {
             candidate++;
         }
         //Done running, ready gui to run again
-        display.setEnabled(true);
-        stop.setEnabled(false);
-        go = null;
+        reset();
     }   
     
     public static boolean isPrime(int checkNumber) {
