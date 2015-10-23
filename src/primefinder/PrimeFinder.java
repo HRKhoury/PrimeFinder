@@ -12,6 +12,7 @@ package primefinder;
 import java.awt.*;
 import javax.swing.*;
 import java.awt.event.*;
+import java.util.stream.*;
 
 public class PrimeFinder extends JFrame implements Runnable, ActionListener {
     Thread go;
@@ -92,13 +93,9 @@ public class PrimeFinder extends JFrame implements Runnable, ActionListener {
     }   
     
     public static boolean isPrime(int checkNumber) {
-        double root = Math.sqrt(checkNumber);
-        for (int i = 2; i <= root; i++) {
-            if (checkNumber % i == 0) {
-                return false;
-            }
-        }
-        return true;
+        int root = (int) Math.sqrt ((double) checkNumber);
+        return IntStream.rangeClosed(2, root)
+                .noneMatch(i -> checkNumber % i == 0);
     }
     
     private void setLookAndFeel() {
